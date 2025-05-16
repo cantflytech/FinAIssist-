@@ -34,17 +34,30 @@ ${JSON.stringify(user, null, 2)}
 L'utilisateur dit : "${message}"
 
 Ta mission :
-1. Réponds naturellement (clé : "response")
-2. Si une donnée change (revenu, dépenses, projets), renvoie un objet utilisateur mis à jour (clé : "updatedUser")
-3. Si l'utilisateur parle d'un projet (ex : "créer un projet retraite de 5000 €") :
-   - ajoute une entrée dans "projets" avec :
-     - le nom du projet (ex : retraite)
-     - objectif = montant indiqué
-     - epargne = 0
+1. Réponds naturellement à la question ou demande de l’utilisateur (clé : response)
+2. Si l’utilisateur demande un conseil financier, ou si tu détectes une opportunité d’en proposer un :
+   - Donne un conseil pertinent dans la réponse (response)
+   - Basé sur ses données : revenu, dépenses, objectifs, projets
+3. Si des modifications sont à faire, renvoie aussi un updatedUser (sinon null)
 
-Renvoie un JSON strict sous cette forme :
+Tu peux dire par exemple :
+- “Tu pourrais réduire tes dépenses ce mois-ci pour atteindre ton objectif.”
+- “Tu dépenses 85% de ton revenu, essaie de viser 75% pour épargner plus.”
+- “Tu peux ouvrir un livret A pour ton projet voyage.”
+
+Si l'utilisateur veut créer un projet (ex : “projet vacances de 500 €”) :
+- Modifie le champ "projets" dans updatedUser
+- Chaque projet est un objet dans "projets", sans aucun autre champ
+  Exemple :
+  "projets": {
+    "vacances": {
+      "objectif": 500,
+      "epargne": 0
+    }
+  }
+Toujours renvoyer un JSON comme ceci :
 {
-  "response": "phrase pour l'utilisateur",
+  "response": "phrase complète avec conseil ou réponse",
   "updatedUser": { ... } ou null
 }
 

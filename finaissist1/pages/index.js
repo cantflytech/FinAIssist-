@@ -38,6 +38,9 @@ export default function HomePage() {
     localStorage.removeItem('userEmail');
     router.push('/login');
   };
+  const goToDashboard = () => {
+    router.push('/dashboard');
+  };
 
   const updateUserData = async (updateData) => {
     await fetch('/api/update', {
@@ -94,32 +97,69 @@ export default function HomePage() {
   };
 
   return (
-    <div style={{ padding: 30 }}>
-      <h1>🤖 FinAIssist</h1>
-      {email && (
-        <div style={{ marginBottom: 10 }}>
-          <span>Connecté en tant que : <strong>{email}</strong></span>
-          <button onClick={handleLogout} style={{ marginLeft: 10 }}>Se déconnecter</button>
-        </div>
-      )}
-
-      <div style={{ maxHeight: 300, overflowY: 'scroll', border: '1px solid #ccc', marginBottom: 10, padding: 10 }}>
-        {history.map((msg, index) => (
-          <div key={index} style={{ color: msg.role === 'user' ? 'blue' : 'green' }}>
-            <strong>{msg.role}:</strong> {msg.text}
+<div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-100 flex flex-col items-center justify-center py-8">
+      <div className="w-full max-w-xl bg-white rounded-2xl shadow-lg p-8 flex flex-col gap-6">
+        <h1 className="text-3xl font-bold text-blue-700 flex items-center gap-2">
+          <span role="img" aria-label="robot">🤖</span> FinAIssist
+        </h1>
+        {email && (
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 bg-blue-50 rounded-lg p-3">
+            <span className="text-gray-700">
+              Connecté en tant que : <strong className="text-blue-600">{email}</strong>
+            </span>
+            <div className="flex gap-2 mt-2 sm:mt-0">
+              <button
+                onClick={handleLogout}
+                className="px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 transition"
+              >
+                Se déconnecter
+              </button>
+              <button
+                onClick={goToDashboard}
+                className="px-3 py-1 bg-green-100 text-green-700 rounded hover:bg-green-200 transition flex items-center gap-1"
+              >
+                <span role="img" aria-label="dashboard">🔁</span> Dashboard
+              </button>
+            </div>
           </div>
-        ))}
-      </div>
+        )}
 
-      <input
-        type="text"
-        placeholder="Écris ici..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-        style={{ width: '300px', marginRight: 10 }}
-      />
-      <button onClick={sendMessage}>Envoyer</button>
+        <div className="flex-1 overflow-y-auto max-h-80 bg-gray-50 rounded-lg border border-gray-200 p-4 flex flex-col gap-2">
+          {history.map((msg, index) => (
+            <div
+              key={index}
+              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <div
+                className={`px-4 py-2 rounded-lg max-w-xs break-words shadow
+                  ${msg.role === 'user'
+                    ? 'bg-blue-100 text-blue-900 self-end'
+                    : 'bg-green-100 text-green-900 self-start'
+                  }`}
+              >
+                <span className="font-semibold capitalize">{msg.role}:</span> {msg.text}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex gap-2 items-center">
+          <input
+            type="text"
+            placeholder="Écris ici..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 transition"
+          />
+          <button
+            onClick={sendMessage}
+            className="px-5 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
+          >
+            Envoyer
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
