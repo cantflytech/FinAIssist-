@@ -1,0 +1,17 @@
+[
+  {
+    "email": "Test@test.fr",
+    "code": "123456",
+    "prenom": "ines",
+    "revenu": 1600,
+    "epargneObjectif": 300,
+    "depensesMois": 760,
+    "projets": {
+      "vacance": {
+        "nom": "vacance",
+        "objectif": 500,
+        "epargne": 200
+      }
+    }
+  }
+]
