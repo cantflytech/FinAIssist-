@@ -58,12 +58,13 @@ Il s’appuie sur une IA locale via **Ollama** (modèles LLM comme Mistral ou LL
 
 ### Installation
 
-```bash
+`` 
 git clone https://github.com/votre-orga/finaissist.git
 cd finaissist
 npm install
-npm run dev 
-``
+npm run dev
+`` 
+
 Application disponible sur http://localhost:3000
 
 
@@ -85,11 +86,11 @@ Chaque réponse peut entraîner :
 
 L’IA répond avec un JSON strict du type :
 
-```json
+``
 {
   "response": "Voici ce que je te recommande...",
   "updatedUser": { ... }
-}```
+}``
 
 
 ###⚠️ Le prompt est strictement conçu pour :
