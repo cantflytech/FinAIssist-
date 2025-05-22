@@ -90,10 +90,11 @@ L’IA répond avec un JSON strict du type :
 {
   "response": "Voici ce que je te recommande...",
   "updatedUser": { ... }
-}``
+}
+``
 
 
-###⚠️ Le prompt est strictement conçu pour :
+⚠️ Le prompt est strictement conçu pour :
 -Ne jamais effacer les données utilisateur
 -Ajouter sans écraser : projets, produits, recommandations
 -Calculer et renvoyer uniquement des valeurs numériques
