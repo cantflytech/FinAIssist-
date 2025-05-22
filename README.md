@@ -63,6 +63,9 @@ git clone https://github.com/votre-orga/finaissist.git
 cd finaissist
 npm install
 npm run dev 
+``
+Application disponible sur http://localhost:3000
+
 
 ---
 
