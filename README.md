@@ -62,8 +62,9 @@ Il s’appuie sur une IA locale via **Ollama** (modèles LLM comme Mistral ou LL
 git clone https://github.com/votre-orga/finaissist.git
 cd finaissist
 npm install
-npm run dev ```
+npm run dev 
 
+---
 
 ## 🔁 Flux IA (Ollama)
 L'utilisateur débute la conversation
