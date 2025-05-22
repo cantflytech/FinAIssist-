@@ -32,23 +32,36 @@ const newUser = {
   // 💸 Données de base
   revenu: 0,                        // Revenu mensuel net
   depensesFixes: 0,                // Charges fixes (loyer, abonnements...)
-  depensesVariables: 0,           // Courses, sorties, transports...
+  depensesVariables: 0,            // Courses, sorties, transports...
 
   // 📊 Budget global
-  budgetMensuel: 0,               // Calculé : revenu - dépenses fixes (optionnel si on le déduit à l'affichage)
+  budgetMensuel: 0,                // Calculé : revenu - dépenses fixes (optionnel si on le déduit à l'affichage)
 
   // 🎯 Objectif d'épargne mensuel
-  epargneObjectifMensuel: 0,      // Ex: 10% du revenu
-
+  epargneObjectifMensuel: 0,       // Ex: 10% du revenu
 
   // 🛡️ Épargne de précaution
-  epargnePrecautionObjectif: 0,   // Ex: dépense moyenne × 6 mois
-  epargnePrecautionActuelle: 0,   // Ce que l'utilisateur a déjà mis de côté
+  epargnePrecautionObjectif: 0,    // Ex: dépense moyenne × 6 mois
+  epargnePrecautionActuelle: 0,    // Ce que l'utilisateur a déjà mis de côté
 
   // 🧳 Projets personnalisés
   projets: {
     // exemple : voyage: { objectif: 1000, epargne: 100 }
-  }
+  },
+
+  // 🧱 Produits financiers détenus
+  produitsFinanciers: {
+    compteCourant: false,
+    livrets: false,
+    epargneMoyenTerme: false,
+    assuranceVie: false,
+    peri: false,
+    ctoPea: false
+  },
+  produitsRecommandes: {
+  // Clé = code du produit, valeur = raison personnalisée
+}
+
 };
 
 

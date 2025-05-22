@@ -1,24 +1,36 @@
 [
   {
-    "email": "tes@test.fr",
+    "email": "Test@test.fr",
     "code": "123456",
-    "prenom": "Ines",
+    "prenom": "Inès",
     "revenu": 1600,
     "depensesFixes": 700,
-    "depensesVariables": 700,
-    "budgetMensuel": 200,
+    "depensesVariables": 500,
+    "budgetMensuel": 100,
     "epargneObjectifMensuel": 500,
-    "epargnePrecautionObjectif": 3600,
-    "epargnePrecautionActuelle": 100,
+    "epargnePrecautionObjectif": 4200,
+    "epargnePrecautionActuelle": 400,
     "projets": {
-      "voyage": {
-        "objectif": 1000,
-        "epargne": 100
+      "vacances": {
+        "objectif": 5000,
+        "epargne": 500
       },
-      "Retraite": {
-        "objectif": 500,
-        "epargne": 100
+      "voiture": {
+        "objectif": 10000,
+        "epargne": 0
       }
+    },
+    "produitsFinanciers": {
+      "compteCourant": true,
+      "livrets": false,
+      "epargneMoyenTerme": false,
+      "assuranceVie": false,
+      "peri": false,
+      "ctoPea": false
+    },
+    "produitsRecommandes": {
+      "assuranceVie": "Souple, accessible et fiscalement avantageuse.",
+      "livrets": "Un produit d'épargne à long terme avec un taux d'intérêt attractif."
     }
   }
 ]
