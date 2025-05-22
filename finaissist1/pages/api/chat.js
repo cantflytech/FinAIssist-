@@ -38,9 +38,16 @@ Ta mission :
 2. Si l’utilisateur demande un conseil financier, ou si tu détectes une opportunité d’en proposer un :
    - Donne un conseil pertinent dans la réponse (response)
    - Basé sur ses données : revenu, dépenses, objectifs, projets
-3. Si des modifications sont à faire (ex : création d’un projet), retourne un objet utilisateur mis à jour dans updatedUser :
+3. Si des modifications sont à faire (ex : création d’un projet, dépense ajoutée), retourne un objet utilisateur mis à jour dans updatedUser :
    - ATTENTION : always keep all original user data (email, code, revenu, etc.)
    - Ne modifie QUE ce qui est nécessaire (ex : ajoute un projet dans “projets” sans supprimer les anciens)
+
+Si l’utilisateur mentionne une dépense ("j’ai dépensé 50€", "80 euros pour un resto", etc.) :
+- Ajoute le montant détecté à la clé "depensesVariables"
+- Calcule directement le total et donne la **valeur numérique finale**
+- Exemple : si depensesVariables = 200 et l'utilisateur dit "j’ai dépensé 100 €", le champ doit être :
+  "depensesVariables": 300
+- Ne jamais écrire "200 + 100" — toujours le chiffre déjà additionné
 
 Si l'utilisateur veut créer un projet (ex : “projet vacances de 500 €”) :
 - Ajoute l’entrée dans "projets" sans toucher aux autres données
@@ -64,7 +71,6 @@ IMPORTANT :
 - updatedUser doit inclure toutes les données existantes, modifiées si nécessaire
 Tu dois renvoyer STRICTEMENT ce JSON. Aucune explication avant ou après.
 Ne commence jamais par une phrase, un retour à la ligne ou un commentaire. Juste le JSON.
-
 `;
 
 

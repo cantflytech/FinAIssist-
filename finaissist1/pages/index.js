@@ -14,28 +14,45 @@ export default function HomePage() {
   const [questionStep, setQuestionStep] = useState(0);
 
   useEffect(() => {
-    const storedEmail = localStorage.getItem('userEmail');
-    if (!storedEmail) {
-      router.push('/register');
-    } else {
-      setEmail(storedEmail);
-      fetch('/api/user?email=' + storedEmail)
-        .then((res) => res.json())
-        .then((data) => setUser(data.user));
-    }
-  }, []);
+  const storedEmail = localStorage.getItem('userEmail');
+  if (!storedEmail) {
+    router.push('/register');
+  } else {
+    setEmail(storedEmail);
+    fetch('/api/user?email=' + storedEmail)
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data.user);
+        
+        // ✅ On récupère l'historique local lié à cet utilisateur
+        const storedHistory = localStorage.getItem(`history-${storedEmail}`);
+        if (storedHistory) {
+          setHistory(JSON.parse(storedHistory));
+        }
+      });
+  }
+}, []);
 
-  useEffect(() => {
-    if (user && questionStep === 0) {
-      if (user.revenu === 0 || user.depensesMois === 0 || user.epargneObjectif === 0) {
-        setHistory([{ role: 'bot', text: 'Bienvenue ! Avant de commencer, peux-tu me donner quelques infos ? Quel est ton revenu mensuel ?' }]);
-        setQuestionStep(1);
-      }
+
+useEffect(() => {
+  if (user && questionStep === 0 && history.length === 0) {
+    if (
+      user.revenu === 0 ||
+      user.depensesFixes === 0 ||
+      user.depensesVariables === 0 ||
+      user.epargneObjectifMensuel === 0
+    ) {
+      setHistory([{ role: 'bot', text: 'Bienvenue ! Avant de commencer, peux-tu me donner quelques infos ? Quel est ton revenu mensuel ?' }]);
+      setQuestionStep(1);
     }
-  }, [user]);
+  }
+}, [user]);
+
 
   const handleLogout = () => {
     localStorage.removeItem('userEmail');
+    localStorage.removeItem(`history-${email}`);
+
     router.push('/login');
   };
   const goToDashboard = () => {
@@ -50,51 +67,92 @@ export default function HomePage() {
     });
   };
 
-  const sendMessage = async () => {
-    if (!message || !email) return;
+ const sendMessage = async () => {
+  if (!message || !email) return;
 
-    let botReply = '';
 
-    if (questionStep === 1) {
-      const revenu = parseInt(message);
-      if (!isNaN(revenu)) {
-        await updateUserData({ revenu });
-        botReply = `Merci ! Et combien dépenses-tu en moyenne par mois ?`;
-        setQuestionStep(2);
-      } else {
-        botReply = `Merci d'indiquer un chiffre pour ton revenu mensuel.`;
-      }
-    } else if (questionStep === 2) {
-      const depensesMois = parseInt(message);
-      if (!isNaN(depensesMois)) {
-        await updateUserData({ depensesMois });
-        botReply = `Parfait. Enfin, quel est ton objectif d'épargne mensuel ?`;
-        setQuestionStep(3);
-      } else {
-        botReply = `Merci d'indiquer un chiffre pour tes dépenses.`;
-      }
-    } else if (questionStep === 3) {
-      const epargneObjectif = parseInt(message);
-      if (!isNaN(epargneObjectif)) {
-        await updateUserData({ epargneObjectif });
-        botReply = `Merci ! Tout est prêt, tu peux maintenant discuter librement avec ton assistant 💬`;
-        setQuestionStep(0);
-      } else {
-        botReply = `Merci d'indiquer un chiffre pour ton objectif d'épargne.`;
-      }
+  let botReply = '';
+
+  if (questionStep === 1) {
+    const revenu = parseInt(message);
+    if (!isNaN(revenu)) {
+      await updateUserData({ revenu });
+      botReply = `Merci ! Quels sont tes **dépenses fixes** par mois (loyer, abonnements, etc) ?`;
+      setQuestionStep(2);
     } else {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message, email })
-      });
-      const data = await res.json();
-      botReply = data.response;
+      botReply = `Merci d'indiquer un chiffre pour ton revenu.`;
     }
 
-    setHistory([...history, { role: 'user', text: message }, { role: 'bot', text: botReply }]);
-    setMessage('');
-  };
+  } else if (questionStep === 2) {
+    const depensesFixes = parseInt(message);
+    if (!isNaN(depensesFixes)) {
+      await updateUserData({ depensesFixes });
+      botReply = `Ok ! Et combien dépenses-tu **en moyenne pour les choses variables** (courses, sorties...) ?`;
+      setQuestionStep(3);
+    } else {
+      botReply = `Merci d'indiquer un chiffre pour tes dépenses fixes.`;
+    }
+
+  } else if (questionStep === 3) {
+    const depensesVariables = parseInt(message);
+    if (!isNaN(depensesVariables)) {
+      await updateUserData({ depensesVariables });
+
+      // 🔄 On récupère les dépenses fixes déjà enregistrées
+      const userRes = await fetch('/api/user?email=' + email);
+      const userData = await userRes.json();
+      const depensesFixes = userData.depensesFixes || 0;
+
+      // 📊 On calcule et enregistre le budget mensuel
+      const budgetMensuel = depensesFixes + depensesVariables;
+      await updateUserData({ budgetMensuel });
+
+      botReply = `Parfait ! Combien voudrais-tu épargner chaque mois ?`;
+      setQuestionStep(4);
+    } else {
+      botReply = `Merci d'indiquer un chiffre pour les dépenses variables.`;
+    }
+
+  } else if (questionStep === 4) {
+    const epargneObjectifMensuel = parseInt(message);
+    if (!isNaN(epargneObjectifMensuel)) {
+      await updateUserData({ epargneObjectifMensuel });
+
+      // 🔄 On récupère toutes les dépenses pour calculer l’épargne de précaution
+      const res = await fetch('/api/user?email=' + email);
+      const user = await res.json();
+      const depensesMois = (user.depensesFixes || 0) + (user.depensesVariables || 0);
+      const epargnePrecautionObjectif = depensesMois * 6; // 🔐 Objectif = 6 mois de dépenses
+
+      await updateUserData({
+        epargnePrecautionObjectif,
+        epargnePrecautionActuelle: 0 // 💾 Par défaut à zéro
+      });
+
+      botReply = `Merci ! J’ai tout ce qu’il me faut 👍 Tu peux maintenant discuter librement avec ton assistant 💬`;
+      setQuestionStep(0);
+    } else {
+      botReply = `Merci d'indiquer un chiffre pour ton objectif d'épargne.`;
+    }
+
+  } else {
+    // 🤖 Dialogue normal avec l'IA
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, email })
+    });
+    const data = await res.json();
+    botReply = data.response;
+  }
+
+  // 📝 Mise à jour de l'historique des messages
+  const newHistory = [...history, { role: 'user', text: message }, { role: 'bot', text: botReply }];
+setHistory(newHistory);
+localStorage.setItem(`history-${email}`, JSON.stringify(newHistory));
+setMessage('');
+
+};
 
   return (
 <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-100 flex flex-col items-center justify-center py-8">

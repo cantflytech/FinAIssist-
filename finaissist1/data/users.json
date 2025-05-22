@@ -3,18 +3,21 @@
     "email": "tes@test.fr",
     "code": "123456",
     "prenom": "Ines",
-    "revenu": 1200,
-    "epargneObjectif": 200,
-    "depensesMois": 250,
+    "revenu": 1600,
+    "depensesFixes": 700,
+    "depensesVariables": 700,
+    "budgetMensuel": 200,
+    "epargneObjectifMensuel": 500,
+    "epargnePrecautionObjectif": 3600,
+    "epargnePrecautionActuelle": 100,
     "projets": {
-      "{}": {},
-      "achat chat": {
-        "objectif": 4000,
-        "epargne": 1000
+      "voyage": {
+        "objectif": 1000,
+        "epargne": 100
       },
-      "achat voiture": {
-        "objectif": 5000,
-        "epargne": 0
+      "Retraite": {
+        "objectif": 500,
+        "epargne": 100
       }
     }
   }
